@@ -40,16 +40,16 @@
       <button id="export" type="button">액션 CSV 내보내기</button>
     </section>
     <section class="grid">
-      <article class="metric"><span>대상기간 미수금</span><strong id="outstanding">₩0</strong></article>
-      <article class="metric"><span>연도 누계 미수</span><strong id="ytd">₩0</strong></article>
-      <article class="metric"><span>매출계산서</span><strong id="salesTotal">₩0</strong></article>
-      <article class="metric"><span>매입계산서</span><strong id="purchaseTotal">₩0</strong></article>
-      <article class="metric"><span>계산서 발행 필요</span><strong id="issueTotal">₩0</strong></article>
+      <article class="metric"><span>대상기간 미수금</span><strong id="outstanding">₩8,000,000</strong></article>
+      <article class="metric"><span>연도 누계 미수</span><strong id="ytd">₩8,000,000</strong></article>
+      <article class="metric"><span>매출계산서</span><strong id="salesTotal">₩13,500,000</strong></article>
+      <article class="metric"><span>매입계산서</span><strong id="purchaseTotal">₩2,500,000</strong></article>
+      <article class="metric"><span>계산서 발행 필요</span><strong id="issueTotal">₩1,800,000</strong></article>
       <article class="metric"><span>매입계산서 수취 필요</span><strong id="missingPurchase">₩0</strong></article>
-      <article class="metric"><span>현재 기준 시재</span><strong id="cash">₩0</strong></article>
+      <article class="metric"><span>현재 기준 시재</span><strong id="cash">₩5,200,000</strong></article>
     </section>
     <nav class="tabs"><button data-tab="branch" class="active">지점별 미수</button><button data-tab="monthly">누계미수</button><button data-tab="actions">발행/수취 필요</button><button data-tab="rows">계산서 대조</button></nav>
-    <section id="branch" class="panel"><div class="wrap"><table><thead><tr><th>지점</th><th>매출계산서</th><th>정산 합계</th><th>미수금</th><th>로열티 미수</th><th>발주금 미수</th><th>완료율</th></tr></thead><tbody id="branchRows"></tbody></table></div></section>
+    <section id="branch" class="panel"><div class="wrap"><table><thead><tr><th>지점</th><th>매출계산서</th><th>정산 합계</th><th>미수금</th><th>로열티 미수</th><th>발주금 미수</th><th>완료율</th></tr></thead><tbody id="branchRows"><tr><td>지점 C</td><td>₩6,200,000</td><td>₩1,200,000</td><td class="danger">₩5,000,000</td><td>₩0</td><td>₩5,000,000</td><td>19%</td></tr><tr><td>지점 A</td><td>₩1,500,000</td><td>₩0</td><td class="danger">₩1,500,000</td><td>₩1,500,000</td><td>₩0</td><td>0%</td></tr><tr><td>지점 B</td><td>₩2,200,000</td><td>₩700,000</td><td class="danger">₩1,500,000</td><td>₩1,500,000</td><td>₩0</td><td>32%</td></tr></tbody></table></div></section>
     <section id="monthly" class="panel" hidden><div class="wrap"><table><thead><tr><th>월</th><th>매출계산서</th><th>정산 합계</th><th>미수금</th></tr></thead><tbody id="monthlyRows"></tbody></table></div></section>
     <section id="actions" class="panel" hidden><div class="wrap"><table><thead><tr><th>유형</th><th>지점</th><th>거래처</th><th>금액</th><th>내용</th></tr></thead><tbody id="actionRows"></tbody></table></div></section>
     <section id="rows" class="panel" hidden><div class="wrap"><table><thead><tr><th>일자</th><th>지점</th><th>거래처</th><th>항목</th><th>매출계산서</th><th>정산 합계</th><th>미수금</th><th>상태</th></tr></thead><tbody id="salesRows"></tbody></table></div></section>
