@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>클로브 미수·계산서 대시보드</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./app.js?v=20260513-evidence"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Franchise Receivables Dashboard</p>
+        <h1>미수·계산서·시재 대시보드</h1>
+      </div>
+      <div class="toolbar">
+        <label>
+          대상 연도
+          <input id="selectedYear" type="number" min="2020" max="2035" value="2026">
+        </label>
+        <label>
+          지연 기준
+          <input id="overdueDays" type="number" min="0" value="0">
+        </label>
+      </div>
+    </header>
+
+    <main>
+      <section class="upload-band" aria-label="CSV 업로드">
+        <label class="file-control">
+          <span>매출 정산</span>
+          <input id="receivablesFile" type="file" accept=".csv,text/csv">
+          <small data-file-status="receivables">대기 중</small>
+        </label>
+        <label class="file-control">
+          <span>통장 내역</span>
+          <input id="transactionsFile" type="file" accept=".csv,text/csv">
+          <small data-file-status="transactions">대기 중</small>
+        </label>
+        <label class="file-control">
+          <span>매입 정산</span>
+          <input id="payablesFile" type="file" accept=".csv,text/csv">
+          <small data-file-status="payables">대기 중</small>
+        </label>
+        <button id="sampleButton" class="secondary" type="button">샘플 불러오기</button>
+        <button id="exportButton" type="button">액션 CSV 내보내기</button>
+      </section>
+
+      <section class="summary-grid" aria-label="월간 대시보드 요약">
+        <article class="metric">
+          <span>대상기간 미수금</span>
+          <strong id="monthOutstanding">₩0</strong>
+        </article>
+        <article class="metric">
+          <span>연도 누계 미수</span>
+          <strong id="ytdOutstanding">₩0</strong>
+        </article>
+        <article class="metric">
+          <span>매출계산서</span>
+          <strong id="monthSalesInvoiceTotal">₩0</strong>
+        </article>
+        <article class="metric">
+          <span>매입계산서</span>
+          <strong id="monthPurchaseInvoiceTotal">₩0</strong>
+        </article>
+        <article class="metric">
+          <span>계산서 발행 필요</span>
+          <strong id="salesInvoiceIssueNeeded">₩0</strong>
+        </article>
+        <article class="metric">
+          <span>매입계산서 수취 필요</span>
+          <strong id="purchaseInvoiceMissing">₩0</strong>
+        </article>
+        <article class="metric">
+          <span>현재 기준 시재</span>
+          <strong id="cashDelta">₩0</strong>
+        </article>
+      </section>
+
+      <nav class="tabs" aria-label="리포트 보기">
+        <button data-tab="franchise" class="active" type="button">지점별 미수</button>
+        <button data-tab="monthly" type="button">누계미수</button>
+        <button data-tab="actions" type="button">발행/수취 필요</button>
+        <button data-tab="receivables" type="button">계산서 대조</button>
+      </nav>
+
+      <section data-panel="franchise" class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>지점</th>
+                <th>매출계산서</th>
+                <th>입금액</th>
+                <th>미수금</th>
+                <th>로열티 미수</th>
+                <th>발주금 미수</th>
+                <th>완료율</th>
+              </tr>
+            </thead>
+            <tbody id="franchiseRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section data-panel="actions" class="panel" hidden>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>유형</th>
+                <th>지점</th>
+                <th>거래처</th>
+                <th>금액</th>
+                <th>내용</th>
+                <th>원천 ID</th>
+              </tr>
+            </thead>
+            <tbody id="actionRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section data-panel="receivables" class="panel" hidden>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>계산서 ID</th>
+                <th>지점</th>
+                <th>거래처</th>
+                <th>항목</th>
+                <th>매출계산서</th>
+                <th>입금액</th>
+                <th>미수금</th>
+                <th>상태</th>
+              </tr>
+            </thead>
+            <tbody id="receivableRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section data-panel="monthly" class="panel" hidden>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>월</th>
+                <th>매출계산서</th>
+                <th>입금액</th>
+                <th>미수금</th>
+              </tr>
+            </thead>
+            <tbody id="monthlyRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
