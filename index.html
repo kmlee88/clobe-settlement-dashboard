@@ -1,161 +1,99 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>클로브 미수·계산서 대시보드</title>
-    <link rel="stylesheet" href="./styles.css">
-    <script type="module" src="./app.js?v=20260513-evidence"></script>
-  </head>
-  <body>
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">Franchise Receivables Dashboard</p>
-        <h1>미수·계산서·시재 대시보드</h1>
-      </div>
-      <div class="toolbar">
-        <label>
-          대상 연도
-          <input id="selectedYear" type="number" min="2020" max="2035" value="2026">
-        </label>
-        <label>
-          지연 기준
-          <input id="overdueDays" type="number" min="0" value="0">
-        </label>
-      </div>
-    </header>
-
-    <main>
-      <section class="upload-band" aria-label="CSV 업로드">
-        <label class="file-control">
-          <span>매출 정산</span>
-          <input id="receivablesFile" type="file" accept=".csv,text/csv">
-          <small data-file-status="receivables">대기 중</small>
-        </label>
-        <label class="file-control">
-          <span>통장 내역</span>
-          <input id="transactionsFile" type="file" accept=".csv,text/csv">
-          <small data-file-status="transactions">대기 중</small>
-        </label>
-        <label class="file-control">
-          <span>매입 정산</span>
-          <input id="payablesFile" type="file" accept=".csv,text/csv">
-          <small data-file-status="payables">대기 중</small>
-        </label>
-        <button id="sampleButton" class="secondary" type="button">샘플 불러오기</button>
-        <button id="exportButton" type="button">액션 CSV 내보내기</button>
-      </section>
-
-      <section class="summary-grid" aria-label="월간 대시보드 요약">
-        <article class="metric">
-          <span>대상기간 미수금</span>
-          <strong id="monthOutstanding">₩0</strong>
-        </article>
-        <article class="metric">
-          <span>연도 누계 미수</span>
-          <strong id="ytdOutstanding">₩0</strong>
-        </article>
-        <article class="metric">
-          <span>매출계산서</span>
-          <strong id="monthSalesInvoiceTotal">₩0</strong>
-        </article>
-        <article class="metric">
-          <span>매입계산서</span>
-          <strong id="monthPurchaseInvoiceTotal">₩0</strong>
-        </article>
-        <article class="metric">
-          <span>계산서 발행 필요</span>
-          <strong id="salesInvoiceIssueNeeded">₩0</strong>
-        </article>
-        <article class="metric">
-          <span>매입계산서 수취 필요</span>
-          <strong id="purchaseInvoiceMissing">₩0</strong>
-        </article>
-        <article class="metric">
-          <span>현재 기준 시재</span>
-          <strong id="cashDelta">₩0</strong>
-        </article>
-      </section>
-
-      <nav class="tabs" aria-label="리포트 보기">
-        <button data-tab="franchise" class="active" type="button">지점별 미수</button>
-        <button data-tab="monthly" type="button">누계미수</button>
-        <button data-tab="actions" type="button">발행/수취 필요</button>
-        <button data-tab="receivables" type="button">계산서 대조</button>
-      </nav>
-
-      <section data-panel="franchise" class="panel">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>지점</th>
-                <th>매출계산서</th>
-                <th>입금액</th>
-                <th>미수금</th>
-                <th>로열티 미수</th>
-                <th>발주금 미수</th>
-                <th>완료율</th>
-              </tr>
-            </thead>
-            <tbody id="franchiseRows"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section data-panel="actions" class="panel" hidden>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>유형</th>
-                <th>지점</th>
-                <th>거래처</th>
-                <th>금액</th>
-                <th>내용</th>
-                <th>원천 ID</th>
-              </tr>
-            </thead>
-            <tbody id="actionRows"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section data-panel="receivables" class="panel" hidden>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>계산서 ID</th>
-                <th>지점</th>
-                <th>거래처</th>
-                <th>항목</th>
-                <th>매출계산서</th>
-                <th>입금액</th>
-                <th>미수금</th>
-                <th>상태</th>
-              </tr>
-            </thead>
-            <tbody id="receivableRows"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section data-panel="monthly" class="panel" hidden>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>월</th>
-                <th>매출계산서</th>
-                <th>입금액</th>
-                <th>미수금</th>
-              </tr>
-            </thead>
-            <tbody id="monthlyRows"></tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>클로브 미수·계산서 대시보드</title>
+  <style>
+    :root{--ink:#14171a;--muted:#66717c;--line:#d9dee3;--surface:#fff;--band:#f3f5f7;--accent:#20765a;--accent2:#145b43;--danger:#b42318;--danger-bg:#fff1ef}
+    *{box-sizing:border-box}body{margin:0;background:var(--band);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Pretendard,sans-serif;letter-spacing:0}
+    header{display:flex;justify-content:space-between;gap:20px;align-items:end;padding:28px 32px 22px;background:#fff;border-bottom:1px solid var(--line)}
+    h1{margin:0;font-size:28px}.eyebrow{margin:0 0 4px;color:var(--accent2);font-size:13px;font-weight:800}
+    main{width:min(1440px,100%);margin:auto;padding:20px 24px 40px}.toolbar,.uploads{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    label{font-weight:800}.toolbar label{display:grid;gap:6px;color:var(--muted);font-size:12px}
+    input[type=number]{height:38px;width:86px;border:1px solid var(--line);border-radius:6px;padding:0 10px}
+    .uploads{justify-content:space-between;padding:14px;background:#fff;border:1px solid var(--line);border-radius:8px}
+    .file{display:grid;gap:6px;min-width:210px;padding:12px;background:#fbfcfd;border:1px solid var(--line);border-radius:6px}.file small{color:var(--muted);font-weight:500}
+    button{min-height:40px;border:1px solid var(--accent);border-radius:6px;padding:0 14px;background:var(--accent);color:#fff;font-weight:900;cursor:pointer}
+    button.secondary,.tabs button{background:#fff;color:var(--accent2)}.tabs button.active{background:var(--accent2);color:#fff}
+    .grid{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));gap:12px;margin:16px 0}.metric{display:grid;gap:8px;min-height:104px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:8px}
+    .metric span{color:var(--muted);font-size:13px;font-weight:900}.metric strong{align-self:end;font-size:24px}
+    .tabs{display:flex;gap:8px;margin:18px 0 10px;overflow-x:auto}.tabs button{min-width:112px;border-color:var(--line)}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:8px}.wrap{overflow:auto;max-height:calc(100vh - 330px)}
+    table{width:100%;min-width:960px;border-collapse:collapse}th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{position:sticky;top:0;background:#f8fafb;color:#3c4650;font-size:13px}td{font-size:14px}
+    .danger{color:var(--danger);font-weight:900}.status{display:inline-flex;align-items:center;min-height:26px;border-radius:999px;padding:0 10px;font-size:12px;font-weight:900;background:var(--danger-bg);color:var(--danger)}
+    .done{background:#edf7f3;color:var(--accent2)}.empty{padding:42px 14px;color:var(--muted);text-align:center}
+    @media(max-width:1100px){.grid{grid-template-columns:repeat(3,minmax(160px,1fr))}}@media(max-width:760px){header,.toolbar{flex-direction:column;align-items:stretch}main{padding:14px}.grid{grid-template-columns:1fr}.file,.uploads button{width:100%}}
+  </style>
+</head>
+<body>
+  <header>
+    <div><p class="eyebrow">Franchise Receivables Dashboard</p><h1>미수·계산서·시재 대시보드</h1></div>
+    <div class="toolbar"><label>대상 연도<input id="year" type="number" min="2020" max="2035" value="2026"></label></div>
+  </header>
+  <main>
+    <section class="uploads">
+      <label class="file"><span>매출 정산</span><input id="sales" type="file" accept=".csv,text/csv"><small id="salesStatus">대기 중</small></label>
+      <label class="file"><span>통장 내역</span><input id="bank" type="file" accept=".csv,text/csv"><small id="bankStatus">대기 중</small></label>
+      <label class="file"><span>매입 정산</span><input id="purchase" type="file" accept=".csv,text/csv"><small id="purchaseStatus">대기 중</small></label>
+      <button id="sample" class="secondary" type="button">샘플 불러오기</button>
+      <button id="export" type="button">액션 CSV 내보내기</button>
+    </section>
+    <section class="grid">
+      <article class="metric"><span>대상기간 미수금</span><strong id="outstanding">₩0</strong></article>
+      <article class="metric"><span>연도 누계 미수</span><strong id="ytd">₩0</strong></article>
+      <article class="metric"><span>매출계산서</span><strong id="salesTotal">₩0</strong></article>
+      <article class="metric"><span>매입계산서</span><strong id="purchaseTotal">₩0</strong></article>
+      <article class="metric"><span>계산서 발행 필요</span><strong id="issueTotal">₩0</strong></article>
+      <article class="metric"><span>매입계산서 수취 필요</span><strong id="missingPurchase">₩0</strong></article>
+      <article class="metric"><span>현재 기준 시재</span><strong id="cash">₩0</strong></article>
+    </section>
+    <nav class="tabs"><button data-tab="branch" class="active">지점별 미수</button><button data-tab="monthly">누계미수</button><button data-tab="actions">발행/수취 필요</button><button data-tab="rows">계산서 대조</button></nav>
+    <section id="branch" class="panel"><div class="wrap"><table><thead><tr><th>지점</th><th>매출계산서</th><th>정산 합계</th><th>미수금</th><th>로열티 미수</th><th>발주금 미수</th><th>완료율</th></tr></thead><tbody id="branchRows"></tbody></table></div></section>
+    <section id="monthly" class="panel" hidden><div class="wrap"><table><thead><tr><th>월</th><th>매출계산서</th><th>정산 합계</th><th>미수금</th></tr></thead><tbody id="monthlyRows"></tbody></table></div></section>
+    <section id="actions" class="panel" hidden><div class="wrap"><table><thead><tr><th>유형</th><th>지점</th><th>거래처</th><th>금액</th><th>내용</th></tr></thead><tbody id="actionRows"></tbody></table></div></section>
+    <section id="rows" class="panel" hidden><div class="wrap"><table><thead><tr><th>일자</th><th>지점</th><th>거래처</th><th>항목</th><th>매출계산서</th><th>정산 합계</th><th>미수금</th><th>상태</th></tr></thead><tbody id="salesRows"></tbody></table></div></section>
+  </main>
+  <script>
+    const samples={
+      sales:`발급일자,작성일자,거래처,대표 품목,세금계산서 합계,정산 합계,미정산 잔액,상태,정산 예정일자
+2026-05-07,2026-04-30,지점 A,4월 로열티,1500000,0,1500000,정산 예정,
+2026-05-07,2026-04-30,지점 B,4월 로열티,2200000,700000,1500000,정산 예정,
+2026-04-29,2026-04-29,지점 C,4월 반제품 등,6200000,1200000,5000000,정산 예정,
+2026-02-26,2026-02-26,지점 D,2월 반제품 등,3600000,3600000,0,정산 완료,`,
+      bank:`일시,계좌,거래자명,적요,입출금액,증빙찾기,메모
+2026-05-08 13:57,샘플계좌,지점 A,지점 A 로열티,+1500000,매핑완료,26.4월 로열티
+2026-05-08 13:58,샘플계좌,지점 B,지점 B 로열티,+700000,매핑완료,26.4월 로열티
+2026-05-10 22:45,샘플계좌,지점 C,지점 C 발주금,+1200000,매핑완료,26.4월 발주금
+2026-05-07 13:13,샘플계좌,지점 D,지점 D 선입금,+1800000,미매핑,증빙찾기 미매핑`,
+      purchase:`발급일자,작성일자,거래처,대표 품목,세금계산서 합계,정산 합계,미정산 잔액,상태,정산 예정일자
+2026-05-03,2026-05-03,매입처 A,비품,500000,500000,0,정산 완료,
+2026-05-06,2026-05-06,매입처 B,외주용역비,1200000,0,1200000,정산 예정,
+2026-05-09,2026-05-09,매입처 C,가맹점 비품,800000,0,800000,정산 예정,`
+    };
+    const state={sales:[],bank:[],purchase:[]};
+    const aliases={date:["date","발행일","발급일자","거래일","작성일자","일시","일자"],counterparty:["counterparty","거래처","거래자명","입금자명","공급자"],category:["category","항목","대표 품목","분류","계정과목"],billed:["billed_amount","세금계산서 합계","합계금액","청구금액","금액"],amount:["amount","금액","거래금액","입출금액"],settled:["settled_amount","정산 합계","정산금액","입금액","지급액"],remain:["outstanding_amount","미정산 잔액","미수금","미지급금","잔액"],status:["status","상태","정산상태"],direction:["direction","입출금","거래구분"],evidence:["evidence_status","증빙찾기","증빙상태","매핑상태"],memo:["memo","메모","적요","비고"]};
+    const money=new Intl.NumberFormat("ko-KR",{style:"currency",currency:"KRW",maximumFractionDigits:0});
+    function clean(x){return String(x||"").trim().replace(/\s+/g,"_").toLowerCase()}
+    function csv(text){text=String(text||"").replace(/^\uFEFF/,"").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();if(!text)return[];let rows=[],row=[],v="",q=false;for(let i=0;i<text.length;i++){let c=text[i],n=text[i+1];if(c=='"'&&q&&n=='"'){v+='"';i++}else if(c=='"')q=!q;else if(c==","&&!q){row.push(v);v=""}else if(c=="\n"&&!q){row.push(v);rows.push(row);row=[];v=""}else v+=c}row.push(v);rows.push(row);let h=rows.shift().map(clean);return rows.filter(r=>r.some(c=>String(c).trim())).map(r=>Object.fromEntries(h.map((k,i)=>[k,String(r[i]??"").trim()])))}
+    function val(r,k){for(const a of aliases[k]||[k]){const v=r[clean(a)];if(v!==undefined&&String(v).trim()!=="")return String(v).trim()}return""}
+    function num(x){const n=Number(String(x||0).replace(/[^\d.-]/g,""));return Number.isFinite(n)?n:0}
+    function date(x){let s=String(x||"").trim().replace(/[./]/g,"-");if(/^\d{2}-\d{2}-\d{2}/.test(s))s="20"+s;if(/^\d{2}-\d{2}$/.test(s))s=new Date().getFullYear()+"-"+s;return s.slice(0,10)}
+    function branch(t){return String(t||"").replace(/주식회사|㈜|\(주\)|점|_/g," ").replace(/\d+\s*월|[0-9.-]/g," ").replace(/\s+/g," ").trim()||"미지정"}
+    function cat(t){t=String(t||"");if(t.includes("로열티"))return"로열티";if(/발주|반제품|재고|주문/.test(t))return"발주금";if(t.includes("창업"))return"창업비용";return"미분류"}
+    function period(text,fall){let m=String(text||"").match(/(^|\D)(\d{1,2})\s*월/);if(m)return date(fall).slice(0,4)+"-"+m[2].padStart(2,"0");return date(fall).slice(0,7)}
+    function normSales(r){const d=date(val(r,"date")), cp=val(r,"counterparty"), c=val(r,"category")||val(r,"memo"), b=num(val(r,"billed")), s=num(val(r,"settled")), raw=val(r,"remain"), rem=raw?num(raw):Math.max(0,b-s), st=val(r,"status")||(rem>0?"정산 예정":"정산 완료");return{date:d,franchise:branch(cp+" "+c),counterparty:cp||"미지정",category:cat(c),item:c,period:period(c,d),billed:b,settled:s,remain:rem,status:st}}
+    function normPurchase(r){const d=date(val(r,"date")), cp=val(r,"counterparty"), c=val(r,"category"), b=num(val(r,"billed")), s=num(val(r,"settled")), raw=val(r,"remain"), rem=raw?num(raw):Math.max(0,b-s);return{date:d,franchise:branch(cp+" "+c),counterparty:cp||"미지정",category:c||"매입",period:period(c,d),billed:b,settled:s,remain:rem,status:val(r,"status")||(rem>0?"정산 예정":"정산 완료")}}
+    function normBank(r){const amount=num(val(r,"billed")||val(r,"amount")), d=date(val(r,"date")), cp=val(r,"counterparty"), memo=[val(r,"memo"),val(r,"category")].join(" "), ev=val(r,"evidence").replace(/\s+/g,"");return{date:d,franchise:branch(cp+" "+memo),counterparty:cp||"미지정",amount:Math.abs(amount),direction:amount>=0?"in":"out",mapped:/매핑완료|완료|mapped|yes/i.test(ev),unmapped:/미매핑|미연결|없음|누락|unmapped|missing|no/i.test(ev),memo}}
+    function selected(x){return String(x.period||x.date).startsWith(document.querySelector("#year").value||"2026")}
+    function report(){const sales=state.sales.map(normSales), bank=state.bank.map(normBank), purchase=state.purchase.map(normPurchase), open=sales.filter(x=>selected(x)&&x.remain>0&&x.status!=="정산 완료"), scopedSales=sales.filter(selected), scopedPurchase=purchase.filter(selected), scopedBank=bank.filter(x=>String(x.date).startsWith(document.querySelector("#year").value||"2026"));const issues=scopedBank.filter(x=>x.direction==="in"&&x.unmapped).map(x=>({type:"매출계산서 발행 필요",...x,message:"통장내역 입금 건의 증빙찾기 미매핑입니다."}));const due=scopedPurchase.filter(x=>x.remain>0).map(x=>({type:"미지급 송금 필요",amount:x.remain,...x,message:"매입 정산 미지급 건입니다."}));return{sales,open,issues,due,summary:{out:sum(open,"remain"),sales:sum(scopedSales,"billed"),purchase:sum(scopedPurchase,"billed"),issue:sum(issues,"amount"),missing:0,cash:sum(scopedBank.filter(x=>x.direction==="in"),"amount")-sum(scopedBank.filter(x=>x.direction==="out"),"amount")}}}
+    function sum(a,k){return a.reduce((t,x)=>t+Number(x[k]||0),0)}
+    function esc(x){return String(x??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+    function group(items,key){const m=new Map();for(const x of items){const k=x[key]||"미지정";if(!m.has(k))m.set(k,{franchise:k,billed:0,settled:0,remain:0,royalty:0,order:0});const r=m.get(k);r.billed+=x.billed;r.settled+=x.settled;r.remain+=x.remain;if(x.category==="로열티")r.royalty+=x.remain;if(x.category==="발주금")r.order+=x.remain}return[...m.values()].sort((a,b)=>b.remain-a.remain)}
+    function render(){const r=report();outstanding.textContent=money.format(r.summary.out);ytd.textContent=money.format(r.summary.out);salesTotal.textContent=money.format(r.summary.sales);purchaseTotal.textContent=money.format(r.summary.purchase);issueTotal.textContent=money.format(r.summary.issue);missingPurchase.textContent=money.format(r.summary.missing);cash.textContent=money.format(r.summary.cash);branchRows.innerHTML=group(r.open,"franchise").map(x=>`<tr><td>${esc(x.franchise)}</td><td>${money.format(x.billed)}</td><td>${money.format(x.settled)}</td><td class="danger">${money.format(x.remain)}</td><td>${money.format(x.royalty)}</td><td>${money.format(x.order)}</td><td>${x.billed?Math.round(x.settled/x.billed*100):0}%</td></tr>`).join("")||empty(7,"매출 정산 CSV를 넣으면 지점별 미수금이 표시됩니다.");monthlyRows.innerHTML=group(r.open,"period").map(x=>`<tr><td>${esc(x.franchise)}</td><td>${money.format(x.billed)}</td><td>${money.format(x.settled)}</td><td>${money.format(x.remain)}</td></tr>`).join("")||empty(4,"연도 누계 월별 미수 데이터가 없습니다.");actionRows.innerHTML=[...r.issues,...r.due].map(x=>`<tr><td>${esc(x.type)}</td><td>${esc(x.franchise)}</td><td>${esc(x.counterparty)}</td><td>${money.format(x.amount||x.remain)}</td><td>${esc(x.message)}</td></tr>`).join("")||empty(5,"발행/수취/송금 확인 대상이 없습니다.");salesRows.innerHTML=r.sales.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.franchise)}</td><td>${esc(x.counterparty)}</td><td>${esc(x.item)}</td><td>${money.format(x.billed)}</td><td>${money.format(x.settled)}</td><td>${money.format(x.remain)}</td><td><span class="status ${x.status==="정산 완료"?"done":""}">${esc(x.status)}</span></td></tr>`).join("")||empty(8,"매출 정산 CSV를 넣으면 정산 행별 미정산 잔액이 표시됩니다.")}
+    function empty(n,t){return`<tr><td colspan="${n}" class="empty">${t}</td></tr>`}
+    async function bind(id,key,label){document.querySelector("#"+id).addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;state[key]=csv(await f.text());document.querySelector("#"+id+"Status").textContent=`${f.name} · ${state[key].length}건`;render()})}
+    bind("sales","sales");bind("bank","bank");bind("purchase","purchase");year.addEventListener("input",render);sample.onclick=()=>{state.sales=csv(samples.sales);state.bank=csv(samples.bank);state.purchase=csv(samples.purchase);salesStatus.textContent=`샘플 매출정산 · ${state.sales.length}건`;bankStatus.textContent=`샘플 통장내역 · ${state.bank.length}건`;purchaseStatus.textContent=`샘플 매입정산 · ${state.purchase.length}건`;render()};export.onclick=()=>{const r=report(), rows=[["type","franchise","counterparty","amount","message"],...[...r.issues,...r.due].map(x=>[x.type,x.franchise,x.counterparty,x.amount||x.remain,x.message])];const blob=new Blob(["\uFEFF"+rows.map(a=>a.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n")],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="clobe-actions.csv";a.click()};document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".panel").forEach(p=>p.hidden=p.id!==b.dataset.tab)});render();
+  </script>
+</body>
 </html>
